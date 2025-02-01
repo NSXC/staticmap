@@ -1,0 +1,12 @@
+[package]
+name = "mapper"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+goblin = "0.9.3"
+iced-x86 = "1.18"
+indicatif = "0.17.3"
+memmap2 = "0.9.5"
+rayon = "1.7"
+ahash = "0.8.3"
