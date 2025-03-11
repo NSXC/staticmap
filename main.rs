@@ -98,7 +98,7 @@ fn extractstrings(buffer: &[u8], pb: &ProgressBar) -> AHashMap<u64, Arc<String>>
     strings.into_iter().collect()
 }
 
-fn is_meaningful_string(s: &str) -> bool {
+fn ismeaningfulstring(s: &str) -> bool {
     let meaningful_chars = s.chars().filter(|c| c.is_alphanumeric() || c.is_whitespace() || ".,;:!?-_".contains(*c)).count();
     let total_chars = s.chars().count();
     
