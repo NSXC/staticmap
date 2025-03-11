@@ -65,7 +65,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn extractstrings(buffer: &[u8], pb: &ProgressBar) -> AHashMap<u64, Arc<String>> {
+fn extract_strings(buffer: &[u8], pb: &ProgressBar) -> AHashMap<u64, Arc<String>> {
     let chunk_size = 1024 * 1024; // 1MB chunks
     let chunks = buffer.par_chunks(chunk_size);
     let strings: Vec<_> = chunks
@@ -98,14 +98,14 @@ fn extractstrings(buffer: &[u8], pb: &ProgressBar) -> AHashMap<u64, Arc<String>>
     strings.into_iter().collect()
 }
 
-fn ismeaningfulstring(s: &str) -> bool {
+fn is_meaningful_string(s: &str) -> bool {
     let meaningful_chars = s.chars().filter(|c| c.is_alphanumeric() || c.is_whitespace() || ".,;:!?-_".contains(*c)).count();
     let total_chars = s.chars().count();
     
     meaningful_chars as f32 / total_chars as f32 >= 0.2 //changeable
 }
 
-fn findstringreferences(pe: &PE, buffer: &[u8], strings: &AHashMap<u64, Arc<String>>, pb: &ProgressBar) -> AHashMap<u64, (String, AHashSet<Arc<String>>)> {
+fn find_string_references(pe: &PE, buffer: &[u8], strings: &AHashMap<u64, Arc<String>>, pb: &ProgressBar) -> AHashMap<u64, (String, AHashSet<Arc<String>>)> {
     let string_addrs: AHashSet<_> = strings.keys().cloned().collect();
     
     pe.sections
@@ -180,7 +180,7 @@ fn findstringreferences(pe: &PE, buffer: &[u8], strings: &AHashMap<u64, Arc<Stri
         )
 }
 
-fn writeanalysis(pe: &PE, buffer: &[u8], string_refs: &AHashMap<u64, (String, AHashSet<Arc<String>>)>, output: &mut impl Write) -> std::io::Result<()> {
+fn write_analysis(pe: &PE, buffer: &[u8], string_refs: &AHashMap<u64, (String, AHashSet<Arc<String>>)>, output: &mut impl Write) -> std::io::Result<()> {
     writeln!(output, "{:<16} {:<20} {:<50} {}", "RVA", "Section", "Instruction", "String Reference")?;
     writeln!(output, "{}", "-".repeat(120))?;
 
@@ -243,7 +243,7 @@ fn writeanalysis(pe: &PE, buffer: &[u8], string_refs: &AHashMap<u64, (String, AH
     Ok(())
 }
 
-fn isfunctionstart(instruction: &Instruction) -> bool {
+fn is_function_start(instruction: &Instruction) -> bool {
     matches!(
         instruction.code(),
         Code::Push_r64 | Code::Sub_rm64_imm8 | Code::Mov_rm64_r64
@@ -253,7 +253,7 @@ fn isfunctionstart(instruction: &Instruction) -> bool {
     )
 }
 
-fn removenullbytes(s: &Arc<String>) -> String {
+fn remove_null_bytes(s: &Arc<String>) -> String {
     s.chars().filter(|&c| c != '\0').collect()
 }
 
